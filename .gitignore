@@ -58,3 +58,12 @@ out/
 .vscode/
 *.json
 /gradle/
+
+# Temporary directories and caches
+.tmp/
+caches/
+daemon/
+native/
+kotlin-profile/
+jdks/
+wrapper/
