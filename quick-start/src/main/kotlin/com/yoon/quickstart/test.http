@@ -1,0 +1,5 @@
+# ask
+GET http://localhost:8080/ask?q=Spring%20AI%20Quick%20Start%20요약해줘
+
+###
+
