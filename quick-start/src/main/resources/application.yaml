@@ -13,8 +13,8 @@ spring:
     # 2) Vector Store - Qdrant
     vectorstore:
       qdrant:
-        host: localhost
-        port: 6334
+        host: qdrant          # docker-compose 서비스명이면 이렇게
+        grpc-port: 6334       # ← 여기!
         collection-name: ai_docs
         # 필요시 컬렉션명/거리메트릭 등 추가 가능
         # collection-name: ai_docs
@@ -26,7 +26,3 @@ spring:
 #        index-type: HNSW         # 근사최근접 탐색 인덱스
 #        distance-type: COSINE_DISTANCE
 
-
-app:
-  ingest:
-    enabled: true
