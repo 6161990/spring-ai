@@ -2,15 +2,28 @@ package com.yoon.quickstart.controller
 
 import com.yoon.quickstart.tool.WeatherTools
 import org.springframework.ai.chat.client.ChatClient
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor
 import org.springframework.ai.chat.prompt.Prompt
+import org.springframework.ai.vectorstore.SearchRequest
+import org.springframework.ai.vectorstore.VectorStore
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class AiController(
-  private val chatClient: ChatClient
+  private val chatClient: ChatClient,
+  private val vectorStore: VectorStore
 ) {
+
+  private val advisor = QuestionAnswerAdvisor.builder(vectorStore)
+    .searchRequest(
+      SearchRequest
+        .builder()
+        .topK(5)
+        .similarityThreshold(0.5)
+        .build()
+    ).build()
 
   @GetMapping("/ask")
   fun ask(@RequestParam q: String): Map<String, Any?> {
@@ -18,6 +31,7 @@ class AiController(
       .prompt()
       .system("You are a concise assistant.")
       .user(q)
+      .advisors(advisor)
       .call()
       .content()
     return mapOf("question" to q, "answer" to answer)
