@@ -1,0 +1,63 @@
+version: '3.9'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.10.1
+    container_name: qdrant
+    ports:
+      - "6333:6333"   # REST
+      - "6334:6334"   # gRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+  app:
+    build: .
+    container_name: ai-app
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      # === JDBC (앱 -> PGVector) ===
+      #      SPRING_DATASOURCE_URL: jdbc:postgresql://pgvector:5432/ailab
+      #      SPRING_DATASOURCE_USERNAME: postgres
+      #      SPRING_DATASOURCE_PASSWORD: pass1234
+
+      #      # === Spring AI PGVector 설정 ===
+      #      SPRING_AI_VECTORSTORE_PGVECTOR_INITIALIZE_SCHEMA: "true"   # 스키마 자동 생성
+      #      SPRING_AI_VECTORSTORE_PGVECTOR_DIMENSIONS: "768"           # nomic-embed-text 임베딩 차원
+      #      SPRING_AI_VECTORSTORE_PGVECTOR_INDEX_TYPE: HNSW
+      #      SPRING_AI_VECTORSTORE_PGVECTOR_DISTANCE_TYPE: COSINE_DISTANCE
+
+      # === Ollama (로컬 머신에서 실행 중이라 가정) ===
+      # Mac/Windows Docker Desktop: host.docker.internal 사용
+      SPRING_AI_OLLAMA_BASE_URL: http://host.docker.internal:11434
+
+      # (선택) JPA 설정이 필요 없다면 아래 두 개는 제거 가능
+      # SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      # SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+    #    depends_on:
+    #      pgvector:
+    #        condition: service_healthy
+    #    restart: unless-stopped
+
+    #  pgvector:
+    #    image: pgvector/pgvector:pg16
+    #    container_name: ai-pgvector
+    #    environment:
+    #      POSTGRES_DB: ailab
+    #      POSTGRES_USER: postgres
+    #      POSTGRES_PASSWORD: pass1234
+    #    ports:
+    #      - "5432:5432"        # 로컬에서도 접근하려면 유지, 내부만 쓰면 지워도 됨
+    #    healthcheck:
+    #      test: ["CMD-SHELL", "pg_isready -U postgres -d ailab"]
+    #      interval: 5s
+    #      timeout: 3s
+    #      retries: 10
+    #      start_period: 30s
+    #    volumes:
+    #      - pgdata:/var/lib/postgresql/data
+volumes:
+  qdrant_data:

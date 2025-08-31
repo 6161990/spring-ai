@@ -1,8 +1,32 @@
 spring:
   ai:
+    # 1) Ollama 설정 (로컬에서 ollama serve 중)
     ollama:
       base-url: http://localhost:11434
+      embedding:
+        model: nomic-embed-text
       chat:
         options:
-          model: phi3:mini
+          model: llama3.1             # 또는 qwen2.5 (툴 호출 지원)
           temperature: 0.2
+
+    # 2) Vector Store - Qdrant
+    vectorstore:
+      qdrant:
+        host: localhost
+        port: 6334
+        collection-name: ai_docs
+        # 필요시 컬렉션명/거리메트릭 등 추가 가능
+        # collection-name: ai_docs
+        # distance: COSINE
+#    vectorstore:
+#      pgvector:
+#        initialize-schema: true  # 스키마 자동 생성 (1.0.x부터 기본 false) :contentReference[oaicite:4]{index=4}
+#        dimensions: 768          # nomic-embed-text 임베딩 차원(중요) :contentReference[oaicite:5]{index=5}
+#        index-type: HNSW         # 근사최근접 탐색 인덱스
+#        distance-type: COSINE_DISTANCE
+
+
+app:
+  ingest:
+    enabled: true
