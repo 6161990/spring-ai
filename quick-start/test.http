@@ -1,5 +1,5 @@
 ###  /ask
-GET http://localhost:8080/ask?q=Spring%20AI%20Quick%20Start%20요약해줘
+GET http://localhost:8080/ask?q=가장 최근 이력이 뭐야?
 
 ### /summarize
 GET http://localhost:8080/summarize?text=Spring AI Quick Start Guide:\n\n1. **Installation**: Download and install the Spring Boot starter kit from [here](https://start.spring.io/). Choose a project template, fill in your details, and download the project as an executable JAR file or ZIP archive for easy setup on any machine with Java installed.\n\n2. **Run Your Application**: Place the downloaded application into a directory of your choice (e.g., `~/spring-app`). Run it using the command line by navigating to that directory and executing `./target/myApp.jar` or if you have unzipped, run with `java -jar target/myApp.jar`.\n\n3. **Access Your Application**: Open a web browser and navigate to `http://localhost:8080/` (or the port your application is running on). You should see Spring's default welcome page or whatever you have set up in your project as an endpoint response.
