@@ -34,8 +34,8 @@ class AiController(
     .searchRequest(
       SearchRequest
         .builder()
-        .topK(topK)
-        .similarityThreshold(0.5)
+        .topK(topK) // Recell
+        .similarityThreshold(0.5) // precisions
         .build()
     ).build()
 
