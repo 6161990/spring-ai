@@ -63,13 +63,24 @@ class IngestConfig {
       .flatMap { path -> extract(path).stream() }
       .toList()
 
-    val chunks = TokenTextSplitter().apply(docs)
+    val chunks = splitDocs(docs)
     if (chunks.isNotEmpty()) {
       vectorStore.add(chunks)
       log.info("✅ Ingested: ${docs.size} files, ${chunks.size} chunks")
     } else {
       log.info("ℹ️ No chunks produced.")
     }
+  }
+
+  fun splitDocs(docs: List<Document>, chunkSize: Int = 600): List<Document> {
+    val splitter = TokenTextSplitter(
+      chunkSize,        // 한 조각 최대 300 토큰
+      50, // 최소 50글자는 있어야 함
+      30, // 30자 이하 조각은 임베딩 안 함
+      1000,    // 한 문서 최대 1000조각
+      true    // 줄바꿈/구분자(“•”, “-”) 같은 게 문맥 의미를 가짐 → 그대로 보존하는 게 좋음
+    )
+    return splitter.apply(docs)
   }
 
   private fun extract(path: Path): List<Document> =
